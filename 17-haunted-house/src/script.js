@@ -211,11 +211,11 @@ const ghost2 = new THREE.PointLight('#00ffff', 2, 3)
 const ghost3 = new THREE.PointLight('#ffff00', 2, 3)
 scene.add(ghost1, ghost2, ghost3)
 
-const ghost1Helper = new THREE.PointLightHelper(ghost1)
-const ghost2Helper = new THREE.PointLightHelper(ghost2)
-const ghost3Helper = new THREE.PointLightHelper(ghost3)
+// const ghost1Helper = new THREE.PointLightHelper(ghost1)
+// const ghost2Helper = new THREE.PointLightHelper(ghost2)
+// const ghost3Helper = new THREE.PointLightHelper(ghost3)
 
-scene.add(ghost1Helper, ghost2Helper, ghost3Helper)
+// scene.add(ghost1Helper, ghost2Helper, ghost3Helper)
 
 /**
  * Sizes
