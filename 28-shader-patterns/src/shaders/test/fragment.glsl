@@ -100,13 +100,13 @@ void main()
     // strength *= step(0.8, mod(vUv.y * 10.0, 1.0));
 
     // Pattern 14
-    float barX = step(0.4, mod(vUv.x  * 10.0, 1.0));
-    barX *= step(0.8, mod(vUv.y * 10.0, 1.0));
+    // float barX = step(0.4, mod(vUv.x  * 10.0, 1.0));
+    // barX *= step(0.8, mod(vUv.y * 10.0, 1.0));
 
-    float barY = step(0.4, mod(vUv.y  * 10.0, 1.0));
-    barY *= step(0.8, mod(vUv.x * 10.0, 1.0));
+    // float barY = step(0.4, mod(vUv.y  * 10.0, 1.0));
+    // barY *= step(0.8, mod(vUv.x * 10.0, 1.0));
 
-    float strength = barX + barY;
+    // float strength = barX + barY;
 
     // // Pattern 15
     // float barX = step(0.4, mod(vUv.x * 10.0, 1.0));
@@ -178,13 +178,14 @@ void main()
 
     // float strength = (0.15 / distance(uv1, vec2(0.5))) * (0.15 / distance(uv2, vec2(0.5)));
 
-    // Pattern 32
+    // // Pattern 32
     // vec2 rotatedUv = rotate(vUv, PI / 4.0, vec2(0.5));
 
     // vec2 uv1 = vec2(rotatedUv.x, (rotatedUv.y - 0.5) * 5.0 + 0.5);
     // vec2 uv2 = vec2((rotatedUv.x - 0.5) * 5.0 + 0.5, rotatedUv.y);
 
     // float strength = (0.15 / distance(uv1, vec2(0.5))) * (0.15 / distance(uv2, vec2(0.5)));
+    // gl_FragColor = vec4(strength, strength, strength, 1.0);
 
     // // Pattern 33
     // float strength = step(0.25, distance(vUv, vec2(0.5)));
@@ -295,16 +296,16 @@ void main()
     // float strength = sin(noise * 20.0);
     // gl_FragColor = vec4(strength, strength, strength, 1.0);
 
-    // Pattern 50
+    // // Pattern 50
     // float noise = cnoise(vUv * 10.0);
     // float strength = step(0.9, sin(noise * 20.0));
 
     // Colors
-    vec3 blackColor = vec3(0.0);
-    vec3 uvColor = vec3(vUv, 1.0);
-    vec3 mixedColor = mix(blackColor, uvColor, clamp(strength, 0.0, 1.0));
+    // vec3 blackColor = vec3(0.0);
+    // vec3 uvColor = vec3(vUv, 1.0);
+    // vec3 mixedColor = mix(blackColor, uvColor, clamp(strength, 0.0, 1.0));
 
-    gl_FragColor = vec4(mixedColor, 1.0);
+    // gl_FragColor = vec4(mixedColor, 1.0);
 
 
 
