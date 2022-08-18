@@ -85,6 +85,7 @@ uniform float uSmallWavesIterations;
 uniform float uSmallWavesSpeed;
 
 varying float vElevation;
+varying vec3 vModelPosition;
 
 void main() {
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
@@ -98,6 +99,7 @@ void main() {
   }
 
   modelPosition.y += elevation;
+  vModelPosition = modelPosition.xyz;
 
   vec4 viewPosition = viewMatrix * modelPosition;
   vec4 projectedPosition = projectionMatrix * viewPosition;

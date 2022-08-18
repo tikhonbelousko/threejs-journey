@@ -13,14 +13,20 @@ const gui = new dat.GUI({ width: 340 })
 const debugObject = {
   uLowColor: '#186691',
   uHighColor: '#9bd8ff',
+  uFogColor: '#e5f6ff',
 }
 
-gui.addColor(debugObject, 'uLowColor').onChange(c => {
-  waterMaterial.uniforms.uLowColor.value.set(c)
+gui.addColor(debugObject, 'uLowColor').onChange(color => {
+  waterMaterial.uniforms.uLowColor.value.set(color)
 })
 
-gui.addColor(debugObject, 'uHighColor').onChange(c => {
-  waterMaterial.uniforms.uHighColor.value.set(c)
+gui.addColor(debugObject, 'uHighColor').onChange(color => {
+  waterMaterial.uniforms.uHighColor.value.set(color)
+})
+
+gui.addColor(debugObject, 'uFogColor').onChange(color => {
+  waterMaterial.uniforms.uFogColor.value.set(color)
+  renderer.setClearColor(color, 1.0)
 })
 
 // Canvas
@@ -55,6 +61,12 @@ const waterMaterial = new THREE.ShaderMaterial({
     uHighColor: { value: new THREE.Color(debugObject.uHighColor) },
     uColorOffset: { value: 0.08 },
     uColorMultiplier: { value: 5 },
+
+    uFogColor: { value: new THREE.Color(debugObject.uFogColor) },
+    uFogNear: { value: 2 },
+    uFogFar: { value: 3 },
+
+    uCameraPosition: { value: new THREE.Vector3(1, 1, 1) },
   },
 })
 
@@ -128,6 +140,10 @@ gui
   .step(0.0001)
   .name('uSmallWavesSpeed')
 
+// Fog
+gui.add(waterMaterial.uniforms.uFogNear, 'value').min(0).max(5).step(0.0001).name('uFogNear')
+gui.add(waterMaterial.uniforms.uFogFar, 'value').min(0).max(5).step(0.0001).name('uFogFar')
+
 // Mesh
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = -Math.PI * 0.5
@@ -175,6 +191,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.setClearColor(debugObject.uFogColor, 1.0)
 
 /**
  * Animate
