@@ -39,7 +39,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(2, 2, 128 * 4, 128 * 4)
+const waterGeometry = new THREE.PlaneGeometry(10, 10, 1000, 1000)
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
@@ -63,10 +63,10 @@ const waterMaterial = new THREE.ShaderMaterial({
     uColorMultiplier: { value: 5 },
 
     uFogColor: { value: new THREE.Color(debugObject.uFogColor) },
-    uFogNear: { value: 2 },
-    uFogFar: { value: 3 },
+    uFogNear: { value: 3 },
+    uFogFar: { value: 4 },
 
-    uCameraPosition: { value: new THREE.Vector3(1, 1, 1) },
+    uCameraPosition: { value: new THREE.Vector3(0, 0, 0) },
   },
 })
 
@@ -202,6 +202,9 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime()
 
   water.material.uniforms.uTime.value = elapsedTime
+
+  // Fog update
+  waterMaterial.uniforms.uCameraPosition.value.copy(camera.position)
 
   // Update controls
   controls.update()
