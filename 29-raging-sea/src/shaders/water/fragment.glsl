@@ -10,6 +10,7 @@ uniform float uFogFar;
 uniform vec3 uCameraPosition;
 
 varying float vElevation;
+varying float vFoam;
 varying vec3 vModelPosition;
 
 
@@ -17,6 +18,8 @@ void main() {
   float mixStrength = (vElevation + uColorOffset) * uColorMultiplier;
   vec3 color = mix(uLowColor, uHighColor, mixStrength);
 
+  color = mix(color, vec3(1.0), clamp(vFoam, 0.0, 1.0));
+  
   float fogStrenght = (distance(uCameraPosition, vModelPosition) - uFogNear) / (uFogFar - uFogNear);
   color = mix(color, uFogColor, clamp(fogStrenght, 0.0, 1.0));
 

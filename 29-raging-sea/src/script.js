@@ -39,7 +39,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(10, 10, 1000, 1000)
+const waterGeometry = new THREE.PlaneGeometry(5, 5, 1000, 1000)
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({

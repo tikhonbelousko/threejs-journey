@@ -85,6 +85,7 @@ uniform float uSmallWavesIterations;
 uniform float uSmallWavesSpeed;
 
 varying float vElevation;
+varying float vFoam;
 varying vec3 vModelPosition;
 
 void main() {
@@ -97,6 +98,18 @@ void main() {
   for (float i = 1.0; i < uSmallWavesIterations; ++i) {
     elevation -= abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * i, uTime * uSmallWavesSpeed)) * uSmallWavesElevation / i);
   }
+
+  vFoam = 0.0;
+  for (float i = 1.0; i < uSmallWavesIterations; ++i) {
+    vFoam += 0.9 - smoothstep(-0.1, 0.1, abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * i, uTime * uSmallWavesSpeed)) * 10.0 * uSmallWavesElevation / i));
+  }
+
+  // float foam2 = 1.0 - smoothstep(0.1 - 0.1, 0.1 + 0.1, abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * 3.0, uTime * uSmallWavesSpeed))));
+
+  // vFoam -= smoothstep(0.1 - 0.1, 0.1 + 0.1, abs(cnoise(vec3(modelPosition.xz * uSmallWavesFrequency * 10.0, uTime * uSmallWavesSpeed)))) * 2.0 + 0.5;
+  // }
+
+  // vFoam = clamp(max(vFoam, foam2), 0.0, 1.0) * 0.1;
 
   modelPosition.y += elevation;
   vModelPosition = modelPosition.xyz;
