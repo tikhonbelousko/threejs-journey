@@ -6,6 +6,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import firefliesFragmentShader from './shaders/fireflies/fragment.glsl'
 import firefliesVertexShader from './shaders/fireflies/vertex.glsl'
+import portalFragmentShader from './shaders/portal/fragment.glsl'
+import portalVertexShader from './shaders/portal/vertex.glsl'
 
 /**
  * Base
@@ -15,7 +17,7 @@ const gui = new dat.GUI({
   width: 400,
 })
 
-const debugObject = {}
+const guiControls = {}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -50,8 +52,33 @@ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 // Pole light material
 const poleLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 })
 
-// Portal light material
-const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
+/**
+ * Portal
+ */
+guiControls.portalColorStart = new THREE.Color('#1f4e7a')
+guiControls.portalColorEnd = new THREE.Color('#63b7f8')
+
+const portalLightMaterial = new THREE.ShaderMaterial({
+  vertexShader: portalVertexShader,
+  fragmentShader: portalFragmentShader,
+  uniforms: {
+    uTime: { value: 0 },
+    uColorStart: { value: guiControls.portalColorStart },
+    uColorEnd: { value: guiControls.portalColorEnd },
+  },
+  transparent: true,
+})
+
+// gui.addColor(guiControls, 'portalColorStart').onChange(color => {
+//   portalLightMaterial.uniforms.uColorStart.value.set(color)
+// })
+
+// gui.addColor(guiControls, 'portalColorEnd').onChange(color => {
+//   portalLightMaterial.uniforms.uColorEnd.value.set(color)
+// })
+
+gui.addColor(portalLightMaterial.uniforms.uColorStart, 'value').name('portalColorStart')
+gui.addColor(portalLightMaterial.uniforms.uColorEnd, 'value').name('portalColorEnd')
 
 /**
  * Model
@@ -160,10 +187,10 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.outputEncoding = THREE.sRGBEncoding
 
-debugObject.clearColor = '#201919'
-renderer.setClearColor(debugObject.clearColor)
+guiControls.clearColor = '#201919'
+renderer.setClearColor(guiControls.clearColor)
 
-gui.addColor(debugObject, 'clearColor').onChange(color => {
+gui.addColor(guiControls, 'clearColor').onChange(color => {
   renderer.setClearColor(color)
 })
 
@@ -176,6 +203,7 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime()
 
   firefliesMaterial.uniforms.uTime.value = elapsedTime
+  portalLightMaterial.uniforms.uTime.value = elapsedTime
 
   // Update controls
   controls.update()
