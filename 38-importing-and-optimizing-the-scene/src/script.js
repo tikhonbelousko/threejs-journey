@@ -4,6 +4,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import firefliesFragmentShader from './shaders/fireflies/fragment.glsl'
+import firefliesVertexShader from './shaders/fireflies/vertex.glsl'
 
 /**
  * Base
@@ -12,6 +14,8 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 const gui = new dat.GUI({
   width: 400,
 })
+
+const debugObject = {}
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -89,7 +93,47 @@ window.addEventListener('resize', () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+  firefliesMaterial.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2)
 })
+
+/**
+ * Fireflies
+ */
+const firefliesGeometry = new THREE.BufferGeometry()
+const firefliesCount = 30
+const positionsArray = new Float32Array(firefliesCount * 3)
+const scaleArray = new Float32Array(firefliesCount)
+
+for (let i = 0; i < firefliesCount; ++i) {
+  positionsArray[i * 3] = (Math.random() - 0.5) * 4
+  positionsArray[i * 3 + 1] = Math.random() * 1.5
+  positionsArray[i * 3 + 2] = (Math.random() - 0.5) * 4
+  scaleArray[i] = Math.random() * 0.7 + 0.3
+}
+
+firefliesGeometry.setAttribute('position', new THREE.BufferAttribute(positionsArray, 3))
+firefliesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scaleArray, 1))
+
+// Material
+const firefliesMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+    uSize: { value: 100 },
+    uTime: { value: 0 },
+  },
+  vertexShader: firefliesVertexShader,
+  fragmentShader: firefliesFragmentShader,
+  transparent: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+})
+
+gui.add(firefliesMaterial.uniforms.uSize, 'value').name('firefliesSize').min(0).max(500).step(1)
+
+// Points
+const fireflies = new THREE.Points(firefliesGeometry, firefliesMaterial)
+scene.add(fireflies)
 
 /**
  * Camera
@@ -116,6 +160,13 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.outputEncoding = THREE.sRGBEncoding
 
+debugObject.clearColor = '#201919'
+renderer.setClearColor(debugObject.clearColor)
+
+gui.addColor(debugObject, 'clearColor').onChange(color => {
+  renderer.setClearColor(color)
+})
+
 /**
  * Animate
  */
@@ -123,6 +174,8 @@ const clock = new THREE.Clock()
 
 const tick = () => {
   const elapsedTime = clock.getElapsedTime()
+
+  firefliesMaterial.uniforms.uTime.value = elapsedTime
 
   // Update controls
   controls.update()
